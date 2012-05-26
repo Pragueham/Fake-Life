@@ -4,7 +4,7 @@ class Ball {
   boolean gender, isEgg;
   color gStroke, gFill;
   
-  Ball(float xpos, float ypos, float rad, int dirX, int dirY, float gen, boolean isAnEgg) {
+  Ball(float xpos, float ypos, float rad, int dirX, int dirY, float gen) {
    x = xpos;
    y = ypos;
    radius = rad;
@@ -21,7 +21,6 @@ class Ball {
    }
   }
 
-  }
   void move() {
     x += directionX * 2;
     y += directionY * 2;
