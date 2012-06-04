@@ -10,7 +10,7 @@ class Egg {
   }
   
   void grow() {
-    eggRadius++;
+    eggRadius += 2;
   }
 
   void display() {
