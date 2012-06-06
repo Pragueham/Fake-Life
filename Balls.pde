@@ -1,6 +1,6 @@
 class Ball {
   float x, y, radius;
-  int directionX, directionY, eggTimer, anger, collide;
+  int directionX, directionY, eggTimer, anger, collide, hasEt;
   boolean gender, isEgg;
   color gStroke, gFill;
   
@@ -10,9 +10,10 @@ class Ball {
    radius = rad;
    directionX = dirX;
    directionY = dirY; 
-   eggTimer = 25;
+   eggTimer = 125;
    anger = 0;
    collide = 25;
+   hasEt = 25;
      if (gen < 0.5) {
        gender = true; 
        gFill = color(223,93,46,25);

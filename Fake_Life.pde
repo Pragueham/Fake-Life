@@ -1,7 +1,4 @@
-//1.  collision between females seems to cause breeding
-//2.  Problem of megafemales
-//3.  Food overlap doesn't seem to work
-//4.  Feed function doesn't seem to work
+//3.  Sort out overlap logic
 
 ArrayList balls;
 ArrayList food;
@@ -32,6 +29,7 @@ void draw() {
     b1.eggTimer++;
     b1.anger++;
     b1.collide++;
+    b1.hasEt++;
     //compare with the position of the other balls
     for (int j = 0; j < balls.size(); j++) {
        //Make sure it's not the same ball being compared
@@ -40,7 +38,7 @@ void draw() {
          Ball b2 = (Ball) balls.get(j);  
            //collision detection
            if ((circle_collision(b1.x, b1.y, b1.radius, b2.x,b2.y, b2.radius)) == true) {
-             if (b1.gender != b2.gender && b1.eggTimer > 25 && b2.eggTimer > 25) {
+             if (b1.gender != b2.gender && b1.eggTimer > 125 && b2.eggTimer > 125) {
                //Change direction on breed
                b1.directionChange();
                b2.directionChange();
@@ -48,24 +46,31 @@ void draw() {
                b2.eggTimer = 0;
                
                // Add new ball and append to array
-               eggs.add(new Egg(b1.x, b1.y));           
+               eggs.add(new Egg(b1.x, b1.y));    
+                 
              } else {
-               if (b1.gender = true && b1.anger > 100) {
-                 if (b1.radius >= b2.radius) {
-                   b1.radius -= (b2.radius / 8);
-                   b2.radius -= (b1.radius / 4);
-                 } else {
-                   b2.radius -= (b1.radius / 8);
-                   b1.radius -= (b2.radius / 4);
-                 }
+               if (b1.gender = true && b2.gender != false) {
+                 if(b1.anger > 100) {
+                   if (b1.radius >= b2.radius) {
+                     b1.radius -= (b2.radius / 8);
+                     b2.radius -= (b1.radius / 4);
+                   } else {
+                     b2.radius -= (b1.radius / 8);
+                     b1.radius -= (b2.radius / 4);
+                   }
+                  } 
                 } else {
                   if (b1.collide > 25) {
                   b1.directionChange();
                   b1.collide = 0;
+                  println("B1: " + b1.gender + " B2: " + b2.gender);     
                   }
                }
            }
          }
+        // if((overlap(b1.x, b1.y, b1.radius, b2.x,b2.y, b2.radius)) == true) {
+        //   balls.remove(i);
+        // }
        }
      }
      // kill balls that are too small
@@ -80,14 +85,16 @@ void draw() {
         Food f = (Food) food.get(a);
         //check if food is being eaten
         if ((circle_collision(b1.x, b1.y, b1.radius, f.x,f.y, f.radius)) == true) {
-          b1.grow();
-          if (b1.collide > 25) {
+          if (b1.hasEt > 25) {
                   b1.directionChange();
-                  b1.collide = 0;
+                  b1.hasEt = 0;
           }
           f.feed();
     
         }
+       // if((overlap(b1.x, b1.y, b1.radius, f.x,f.y, f.radius)) == true) {
+         //  balls.remove(i);
+        // }
       }    
   } 
   //grow and hatch eggs
@@ -110,19 +117,24 @@ void draw() {
     Food f1 = (Food) food.get(a);
      //check if food is being eaten
      for (int b = 0; b < food.size(); b++) {
-       Food f2 = (Food) food.get(b);
-       if ((circle_collision(f1.x, f1.y, f1.radius, f2.x,f2.y, f2.radius)) != true) {
-          if (frameCount % 25 == 0) {
-            f1.grow();
+       if(a != b) {
+         Food f2 = (Food) food.get(b);
+         if ((circle_collision(f1.x, f1.y, f1.radius, f2.x,f2.y, f2.radius)) == true) {
+           f1.radius--;
+           f2.radius--;
+          } else {
+            if (frameCount % 25 == 0) {
+              f1.grow();
+            }
           }
         }
-      }    
+     }    
       f1.display();     
   }
 }
 
 
-boolean circle_collision(float x1, float y1, float d1, float x2, float y2, float d2) {
+boolean circle_collision(float x1, float y1, float r1, float x2, float y2, float r2) {
 
   // find distance between the two objects
   float xDist = x1-x2;                                   // distance horiz
@@ -130,7 +142,7 @@ boolean circle_collision(float x1, float y1, float d1, float x2, float y2, float
   float distance = sqrt((xDist*xDist) + (yDist*yDist));  // diagonal distance
 
   // test for collision
-  if (d1/2 + d2/2 > distance) {
+  if (r1/2 + r2/2 > distance) {
     return true;    // if a hit, return true
   }
   else {            // if not, return false
